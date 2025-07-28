@@ -1,7 +1,3 @@
-Got it! Here’s the full README content formatted exactly so you can copy-paste all at once (no editor markdown block, just plain text):
-
----
-
 # CoinMarketCap ETL Pipeline with Apache Airflow
 
 This project is an ETL (Extract, Transform, Load) pipeline built using Apache Airflow to fetch cryptocurrency data from the CoinMarketCap API, transform it, and load it into a MySQL database.
@@ -124,8 +120,5 @@ This project is open source under the [MIT License](LICENSE).
 ## Contact
 
 Created by Shishir Raj Giri
-Feel free to contact me at \[[your-email@example.com](mailto:your-email@example.com)] for questions or feedback.
+Feel free to contact me at \[[shishirgiri81@gmail.com](mailto:shishirgirir81@gmal.com)] for questions or feedback.
 
----
-
-If you want, I can help you create the `requirements.txt` file or anything else related!
