@@ -1,89 +1,86 @@
-Sure! Here’s the README.md content ready for you to copy and paste directly:
+Sure! Here’s a clean, professional, and well-structured README content for your Airflow ETL pipeline project that you can directly use:
 
 ````markdown
-🚀 CoinMarketCap Data Pipeline using Apache Airflow
+# CoinMarketCap ETL Pipeline with Apache Airflow
+
+This project is an ETL (Extract, Transform, Load) pipeline built using Apache Airflow to fetch cryptocurrency data from the CoinMarketCap API, transform it, and load it into a MySQL database.
 
 ---
 
-🔍 Project Overview
+## Project Overview
 
-This project builds an automated **ETL pipeline** that fetches cryptocurrency data from the CoinMarketCap API, processes it, and loads it into a MySQL database — all orchestrated by **Apache Airflow**!
+The pipeline performs the following tasks on a daily schedule:
 
----
-
-✨ Features
-
-- 🔄 **Extract**: Fetches latest data for up to 5000 cryptocurrencies from CoinMarketCap API  
-- 🔧 **Transform**: Cleans and normalizes data, selecting key fields and formatting timestamps  
-- 💾 **Load**: Inserts processed data into a MySQL table `crypto_prices`  
-- ⏰ **Automation**: Runs daily using Airflow's DAG scheduler  
-- ⚙️ **Resilience**: Retries on failure with exponential backoff  
+- **Extract:** Retrieves the latest cryptocurrency listings from the CoinMarketCap API and saves the raw JSON data locally.
+- **Transform:** Processes and normalizes the extracted JSON data into a structured pandas DataFrame, cleans and formats key fields, then saves it back as JSON.
+- **Load:** Reads the transformed data and inserts it into a MySQL database table named `crypto_prices`.
 
 ---
 
-🛠️ Technologies Used
+## Technologies Used
 
-| Technology          | Purpose                      |
-|---------------------|------------------------------|
-| 🐍 Python 3.x       | Pipeline scripting            |
-| 🐝 Apache Airflow   | Workflow orchestration        |
-| 📊 pandas           | Data manipulation             |
-| 🌐 requests         | API calls                    |
-| 🐬 MySQL            | Data storage                 |
-| 🗄️ mysql-connector-python | MySQL connection from Python |
-| 🔑 CoinMarketCap API | Cryptocurrency data source   |
+- Python 3.x
+- Apache Airflow
+- Requests library for HTTP API calls
+- pandas for data processing
+- MySQL Connector/Python for database interaction
+- MySQL Database
 
 ---
 
-📋 Prerequisites
+## Setup & Installation
 
-- MySQL Server installed & running  
-- Airflow installed and configured  
-- Valid CoinMarketCap API key  
-- Python environment with required packages  
-
----
-
-⚙️ Setup & Installation
-
-1. Clone the repository
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/shishirgiri81/CoinMarketCap-Data-Pipeline-Using-Airflow.git
-   cd CoinMarketCap-Data-Pipeline-Using-Airflow
+   git clone <repository_url>
+   cd <repository_folder>
 ````
 
-2. Create & activate Python virtual environment
+2. **Create and activate a Python virtual environment (optional but recommended)**
 
    ```bash
-   python3 -m venv py_env
-   source py_env/bin/activate
+   python3 -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   ```
+
+3. **Install required packages**
+
+   ```bash
    pip install -r requirements.txt
    ```
 
-3. Set MySQL credentials as environment variables
+4. **Configure Environment Variables**
+
+   Set the following environment variables for MySQL connection:
 
    ```bash
-   export MYSQL_USER='your_mysql_username'
-   export MYSQL_PASSWORD='your_mysql_password'
+   export MYSQL_USER=<your_mysql_username>
+   export MYSQL_PASSWORD=<your_mysql_password>
    ```
 
-4. Create MySQL table
-   Run this in your MySQL client:
+5. **Set up MySQL Database**
+
+   Create the database and the `crypto_prices` table. Example schema:
 
    ```sql
+   CREATE DATABASE cmc_db;
+
+   USE cmc_db;
+
    CREATE TABLE crypto_prices (
        id INT PRIMARY KEY,
-       name VARCHAR(255),
+       name VARCHAR(100),
        symbol VARCHAR(50),
-       slug VARCHAR(255),
+       slug VARCHAR(100),
        date_added DATETIME,
        max_supply BIGINT,
        circulating_supply BIGINT,
        total_supply BIGINT,
        cmc_rank INT,
        last_updated DATETIME,
-       price FLOAT,
-       volume_24h FLOAT,
+       price DECIMAL(20,8),
+       volume_24h BIGINT,
        volume_change_24h FLOAT,
        percent_change_1h FLOAT,
        percent_change_24h FLOAT,
@@ -91,48 +88,61 @@ This project builds an automated **ETL pipeline** that fetches cryptocurrency da
        percent_change_30d FLOAT,
        percent_change_60d FLOAT,
        percent_change_90d FLOAT,
-       market_cap FLOAT,
+       market_cap BIGINT,
        market_cap_dominance FLOAT
    );
    ```
 
-5. **Initialize & start Airflow**
+6. **Configure Airflow**
 
-   ```bash
-   airflow db init
-   airflow webserver --port 8080
-   airflow scheduler
-   ```
-
-6. **Deploy DAG file**
-   Place your DAG `.py` file inside Airflow’s `dags/` directory.
+   Make sure your Airflow environment is set up and the DAG file is placed in the Airflow DAGs folder.
 
 ---
 
-## ▶️ Running the Pipeline
+## Usage
 
-* The DAG **`mainDAG`** runs automatically every day (`@daily`)
-* You can also manually trigger runs via the Airflow UI or CLI
+* Start your Airflow scheduler and webserver:
 
----
+  ```bash
+  airflow scheduler
+  airflow webserver
+  ```
 
-## ⚠️ Notes
+* Access the Airflow UI (usually at `http://localhost:8080`).
 
-* Replace the API key in the extract function with your own valid CoinMarketCap API key! 🔑
-* Intermediate JSON data is stored under the `./data/` folder
-* API and database exceptions are handled gracefully with retries and logging
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License**. Feel free to use and modify! 💡
+* Trigger the `mainDAG` DAG manually or wait for the scheduled run (`@daily`).
 
 ---
 
-*Made with ❤️ by Shishir Raj Giri*
+## Code Summary
+
+* `extract`: Fetches data from CoinMarketCap API and saves raw JSON.
+* `transform`: Reads JSON, normalizes, cleans, and converts it to structured data.
+* `load`: Inserts the transformed data into MySQL database.
+
+---
+
+## Notes
+
+* API Key for CoinMarketCap is hardcoded in the `extract` function — **replace it with your own API key** or load it securely via environment variables.
+* Make sure the `./data` directory exists or adjust the path accordingly.
+* Error handling is implemented during API requests and MySQL interactions.
+* Retries and retry delays are configured for Airflow tasks.
+
+---
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+## Contact
+
+Created by Shishir Raj Giri
+For any questions or feedback, please reach out at \[[your-email@example.com](mailto:your-email@example.com)].
 
 ```
 
-Just paste it in your `README.md` file! Let me know if you want it customized more.
+If you want, I can also help you generate a `requirements.txt` or Dockerfile for this setup! Let me know.
 ```
