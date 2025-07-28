@@ -2,6 +2,9 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import pandas as pd
+import os
+import mysql.connector
+
 
 
 from datetime import datetime, timedelta
@@ -21,6 +24,7 @@ def extract():
 
   # Define the API URL and parameters to get the cryptocurrency data
   url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
+  
   parameters = {
     'start':'1',
     'limit':'5000',
@@ -68,6 +72,9 @@ def transform(ti):
   with open(file_path, 'r') as f:
     data = json.load(f)
 
+  # data = pd.read_json(file_path, orient='records', lines=True)
+
+
   # Normalize the nested data to create a flat structure
   coins = data['data']
 
@@ -91,14 +98,24 @@ def transform(ti):
   data['max_supply'] =data['max_supply'].fillna(0)
 
   # Convert 'last_updated' column to datetime format
-  data['last_updated'] = pd.to_datetime(data['last_updated'], format='ISO8601')
+  data['last_updated'] = pd.to_datetime(data['last_updated']).dt.strftime('%Y-%m-%d %H:%M:%S')
+
+
+
+  data['date_added'] = pd.to_datetime(data['date_added']).dt.strftime('%Y-%m-%d %H:%M:%S')
+
 
 
   # Convert 'total_supply' column to numeric type
   data['total_supply'] = pd.to_numeric(data['total_supply'])
 
   # Convert the DataFrame to a JSON object
+  # data = data.to_json(file_path, orient='records', lines=True)
+
+  # data.to_json(file_path, orient='records', lines=True)
+
   data = data.to_json()
+
 
 
   # Save the processed data back to the JSON file
@@ -107,6 +124,103 @@ def transform(ti):
     
   # Return the file path for the next task or for future use
   return file_path
+
+
+
+
+
+def load(ti):
+
+  file_path = ti.xcom_pull(task_ids = 'transform')
+
+  # with open(file_path, 'r') as f:
+  #   data = json.load(f)
+  
+  # df = pd.read_json(data)
+
+  # df = pd.read_json(file_path, orient='records', lines=True)
+
+  # Read the saved JSON data from the file
+  with open(file_path, 'r') as f:
+    data = json.load(f)
+
+  data = pd.read_json(data)
+
+  # # Normalize the nested data to create a flat structure
+  # coins = data['data']
+
+
+  # # Convert the list of coins into a pandas DataFrame
+  # data = pd.DataFrame.from_dict(pd.json_normalize(coins), orient = 'columns')
+
+  # df = pd.read_json(file_path, orient='records', lines=True)
+
+  print(f"Data shape before insert: {data.shape}")
+  print(f"Data preview:\n{data.head()}")
+
+
+
+
+  try:
+    conn = mysql.connector.connect(
+        host='localhost',
+        user=os.getenv('MYSQL_USER'),        # MySQL username from env var
+        password=os.getenv('MYSQL_PASSWORD'),# MySQL password from env var
+        database='cmc_db'                    # Your database name
+    )
+  
+    cursor = conn.cursor()
+
+    insert_query = """
+      INSERT INTO crypto_prices (
+          id, name, symbol, slug, date_added, max_supply, circulating_supply, total_supply,
+          cmc_rank, last_updated, price, volume_24h, volume_change_24h, percent_change_1h,
+          percent_change_24h, percent_change_7d, percent_change_30d, percent_change_60d,
+          percent_change_90d, market_cap, market_cap_dominance
+      ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """
+      
+    for row in data.itertuples(index = False):
+      cursor.execute(insert_query, tuple(row))
+
+    conn.commit()
+  
+  except mysql.connector.Error as err:
+
+    print(f"Database error: {err}")
+    
+  finally:
+      if cursor:
+          cursor.close()
+      if conn:
+          conn.close()
+
+  # conn = mysql.connector.connect(
+  #       host='localhost',
+  #       user=os.getenv('MYSQL_USER'),        # MySQL username from env var
+  #       password=os.getenv('MYSQL_PASSWORD'),# MySQL password from env var
+  #       database='cmc_db'                    # Your database name
+  #   )
+  
+  # cursor = conn.cursor()
+
+  # insert_query = """
+  #   INSERT INTO crypto_prices (
+  #       id, name, symbol, slug, date_added, max_supply, circulating_supply, total_supply,
+  #       cmc_rank, last_updated, price, volume_24h, volume_change_24h, percent_change_1h,
+  #       percent_change_24h, percent_change_7d, percent_change_30d, percent_change_60d,
+  #       percent_change_90d, market_cap, market_cap_dominance
+  #   ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+  #   """
+    
+  # for row in df.itertuples(index = False):
+  #   cursor.execute(insert_query, tuple(row))
+
+  # conn.commit()
+  # cursor.close()
+  # conn.close()
+
+
 
   
 
@@ -124,7 +238,7 @@ with DAG(
 
   dag_id = 'mainDAG',
   description = 'CoinMarketCap',
-  start_date = datetime(2025, 3, 11),
+  start_date = datetime(2025, 7, 26),
   schedule_interval = '@daily'
 
 ) as dag:
@@ -139,6 +253,11 @@ with DAG(
     python_callable = transform
   )
 
+  task3 = PythonOperator(
+    task_id = 'load',
+    python_callable = load
+  )
 
 
-  task1 >> task2
+
+  task1 >> task2 >> task3
