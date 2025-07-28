@@ -135,5 +135,5 @@ This project is open source under the [MIT License](LICENSE).
 
 ## 📬 Contact
 
-Created with ❤️ by **Shishir Raj Giri**
+Created by **Shishir Raj Giri**
 Feel free to reach out at \[[shishirgiri81@gmail.com](mailto:shishirgiri81@gmail.com)] for any questions or feedback!
