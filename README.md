@@ -1,17 +1,17 @@
 Sure! Here’s the README.md content ready for you to copy and paste directly:
 
 ````markdown
-# 🚀 CoinMarketCap Data Pipeline using Apache Airflow
+🚀 CoinMarketCap Data Pipeline using Apache Airflow
 
 ---
 
-## 🔍 Project Overview
+🔍 Project Overview
 
 This project builds an automated **ETL pipeline** that fetches cryptocurrency data from the CoinMarketCap API, processes it, and loads it into a MySQL database — all orchestrated by **Apache Airflow**!
 
 ---
 
-## ✨ Features
+✨ Features
 
 - 🔄 **Extract**: Fetches latest data for up to 5000 cryptocurrencies from CoinMarketCap API  
 - 🔧 **Transform**: Cleans and normalizes data, selecting key fields and formatting timestamps  
@@ -21,7 +21,7 @@ This project builds an automated **ETL pipeline** that fetches cryptocurrency da
 
 ---
 
-## 🛠️ Technologies Used
+🛠️ Technologies Used
 
 | Technology          | Purpose                      |
 |---------------------|------------------------------|
@@ -35,7 +35,7 @@ This project builds an automated **ETL pipeline** that fetches cryptocurrency da
 
 ---
 
-## 📋 Prerequisites
+📋 Prerequisites
 
 - MySQL Server installed & running  
 - Airflow installed and configured  
@@ -44,15 +44,15 @@ This project builds an automated **ETL pipeline** that fetches cryptocurrency da
 
 ---
 
-## ⚙️ Setup & Installation
+⚙️ Setup & Installation
 
-1. **Clone the repository**  
+1. Clone the repository
    ```bash
    git clone https://github.com/shishirgiri81/CoinMarketCap-Data-Pipeline-Using-Airflow.git
    cd CoinMarketCap-Data-Pipeline-Using-Airflow
 ````
 
-2. **Create & activate Python virtual environment**
+2. Create & activate Python virtual environment
 
    ```bash
    python3 -m venv py_env
@@ -60,14 +60,14 @@ This project builds an automated **ETL pipeline** that fetches cryptocurrency da
    pip install -r requirements.txt
    ```
 
-3. **Set MySQL credentials as environment variables**
+3. Set MySQL credentials as environment variables
 
    ```bash
    export MYSQL_USER='your_mysql_username'
    export MYSQL_PASSWORD='your_mysql_password'
    ```
 
-4. **Create MySQL table**
+4. Create MySQL table
    Run this in your MySQL client:
 
    ```sql
