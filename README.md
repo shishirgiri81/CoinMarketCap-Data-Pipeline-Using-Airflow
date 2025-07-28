@@ -1,59 +1,72 @@
-# CoinMarketCap ETL Pipeline with Apache Airflow
+# 🚀 CoinMarketCap ETL Pipeline with Apache Airflow
 
-This project is an ETL (Extract, Transform, Load) pipeline built using Apache Airflow to fetch cryptocurrency data from the CoinMarketCap API, transform it, and load it into a MySQL database.
-
----
-
-## Project Overview
-
-The pipeline performs the following tasks on a daily schedule:
-
-* **Extract:** Retrieves the latest cryptocurrency listings from the CoinMarketCap API and saves the raw JSON data locally.
-* **Transform:** Processes and normalizes the extracted JSON data into a structured pandas DataFrame, cleans and formats key fields, then saves it back as JSON.
-* **Load:** Reads the transformed data and inserts it into a MySQL database table named `crypto_prices`.
+This project is an **ETL (Extract, Transform, Load)** pipeline built using **Apache Airflow** to fetch cryptocurrency data from the CoinMarketCap API, transform it, and load it into a MySQL database. 💰📊
 
 ---
 
-## Technologies Used
+## 🔍 Project Overview
 
-* Python 3.x
-* Apache Airflow
-* Requests library for HTTP API calls
-* pandas for data processing
-* MySQL Connector/Python for database interaction
-* MySQL Database
+The pipeline performs the following tasks on a **daily schedule**:
+
+* 🛠️ **Extract:** Retrieve the latest cryptocurrency listings from the CoinMarketCap API and save raw JSON data locally.
+* 🔄 **Transform:** Process and normalize the JSON data into a clean pandas DataFrame, format key fields, and save it as JSON.
+* 💾 **Load:** Insert the transformed data into the MySQL database table `crypto_prices`.
 
 ---
 
-## Setup & Installation
+## 🛠️ Technologies Used
+
+* 🐍 Python 3.x
+* ✈️ Apache Airflow
+* 🔗 Requests (HTTP API calls)
+* 🐼 pandas (Data processing)
+* 🐬 MySQL Connector/Python (Database interaction)
+* 🗄️ MySQL Database
+
+---
+
+## ⚙️ Setup & Installation
 
 1. **Clone the repository**
-   `git clone <repository_url>`
-   `cd <repository_folder>`
+
+   ```bash
+   git clone <repository_url>
+   cd <repository_folder>
+   ```
 
 2. **Create and activate a Python virtual environment (optional but recommended)**
-   On Linux/Mac:
-   `python3 -m venv venv`
-   `source venv/bin/activate`
-   On Windows:
-   `python -m venv venv`
-   `venv\Scripts\activate`
+
+   * Linux/Mac:
+
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
+   * Windows:
+
+     ```bash
+     python -m venv venv
+     venv\Scripts\activate
+     ```
 
 3. **Install required packages**
-   `pip install -r requirements.txt`
+
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. **Configure Environment Variables**
-   Set your MySQL credentials as environment variables:
+   Set your MySQL credentials securely:
 
    ```bash
    export MYSQL_USER=<your_mysql_username>
    export MYSQL_PASSWORD=<your_mysql_password>
    ```
 
-   (Adjust according to your OS/shell)
+   *(Adjust for your OS and shell)*
 
 5. **Set up MySQL Database**
-   Create the database and table with this example schema:
+   Create the database and table:
 
    ```sql
    CREATE DATABASE cmc_db;
@@ -86,39 +99,41 @@ The pipeline performs the following tasks on a daily schedule:
    ```
 
 6. **Configure Airflow**
-   Place your DAG file in the Airflow DAGs directory and start the scheduler and webserver.
+   Place the DAG file in Airflow’s DAGs folder and start scheduler & webserver.
 
 ---
 
-## Usage
+## 🚀 Usage
 
 * Start Airflow scheduler and webserver:
-  `airflow scheduler`
-  `airflow webserver`
 
-* Open Airflow UI at `http://localhost:8080` in your browser.
+  ```bash
+  airflow scheduler
+  airflow webserver
+  ```
 
-* Trigger the DAG named `mainDAG` manually or wait for the daily scheduled run.
+* Open the Airflow UI at [http://localhost:8080](http://localhost:8080) in your browser.
 
----
-
-## Notes
-
-* Replace the hardcoded CoinMarketCap API key with your own or store it securely as an environment variable.
-* Ensure the `./data` directory exists or adjust the file paths accordingly.
-* Airflow task retries and delays are configured in the DAG's `default_args`.
-* Proper error handling is implemented for API requests and database operations.
+* Trigger the DAG named `mainDAG` manually or wait for the daily scheduled runs.
 
 ---
 
-## License
+## 📝 Notes
+
+* 🔐 **Important:** Replace the hardcoded CoinMarketCap API key with your own or load it from environment variables securely.
+* 📂 Ensure the `./data` directory exists or update file paths accordingly.
+* ⏳ Airflow retry attempts and delays are configured in the DAG `default_args`.
+* ⚠️ Error handling is implemented for API requests and database operations for robustness.
+
+---
+
+## 📄 License
 
 This project is open source under the [MIT License](LICENSE).
 
 ---
 
-## Contact
+## 📬 Contact
 
-Created by Shishir Raj Giri
-Feel free to contact me at \[[shishirgiri81@gmail.com](mailto:shishirgirir81@gmal.com)] for questions or feedback.
-
+Created with ❤️ by **Shishir Raj Giri**
+Feel free to reach out at \[[shishirgiri81@gmail.com](mailto:shishirgiri81@gmail.com)] for any questions or feedback!
